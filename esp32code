@@ -3,6 +3,7 @@
 // set pin numbers
 const int buttonPin = 18;  // Button pin
 const int buttonPin2 = 19; // Button pin
+const int buzzerPin = 32; // the buzzer pin
 
 // variable for storing the button status
 int buttonState = 0;
@@ -14,6 +15,7 @@ void setup() {
   pinMode(buttonPin, INPUT);
   // initialize the button pin as an input
   pinMode(buttonPin2, INPUT);
+  pinMode(buzzerPin, OUTPUT); // Set as output
 }
 
 void loop() {
