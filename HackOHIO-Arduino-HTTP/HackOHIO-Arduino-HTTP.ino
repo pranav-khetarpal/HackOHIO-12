@@ -5,8 +5,8 @@ void setup() {
   Serial.begin(115200);
 
   // Replace with your WiFi credentials
-  const char* ssid = "Wale's iPhone";  // Add your WiFi SSID here
-  const char* password = "$LetMeTellYouMyPassword?";  // Add your WiFi Password here
+  const char* ssid = "Your_WiFi_SSID";  // Add your WiFi SSID here
+  const char* password = "Your_WiFi_Password";  // Add your WiFi Password here
   WiFi.begin(ssid, password);
 
   // Connect to WiFi

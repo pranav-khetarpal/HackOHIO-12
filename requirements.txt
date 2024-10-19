@@ -1,0 +1,6 @@
+
+openai==1.28.1
+opencv-python 
+pyttsx3
+python-dotenv
+
