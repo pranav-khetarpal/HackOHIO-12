@@ -62,7 +62,7 @@ class CentroidTracker:
             rows = D.min(axis=1).argsort()
             cols = D.argmin(axis=1)[rows]
             used_cols = set()
-            
+
             for (row, col) in zip(rows, cols):
                 if col in used_cols:
                     continue
@@ -208,6 +208,28 @@ class Vision:
     #     else:
     #         print("No messages available.")
 
+    def draw_bounding_boxes(self, frame, tracked_objects, detection_object_id_map):
+        for object_id, centroid in tracked_objects.items():
+            detection = detection_object_id_map.get(object_id)
+            if detection:
+                label, confidence, bbox = detection
+                x1, y1, x2, y2 = bbox
+
+                # Draw bounding box
+                color = (0, 255, 0)  # Green color for bounding box
+                cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
+
+                # Put label with confidence
+                cv2.putText(
+                    frame,
+                    f"{label} {confidence:.2f}",
+                    (x1, y1 - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    color,
+                    2,
+                )
+
     async def start_detection(self):
         try:
             while True:
@@ -236,6 +258,7 @@ class Vision:
                     detection_object_id_map[i] = detection
 
                 tracked_objects = self.tracker.update(centroids, labels)
+                self.draw_bounding_boxes(frame, tracked_objects, detection_object_id_map)
 
                 for object_id, centroid in tracked_objects.items():
                     for idx, detection in detection_object_id_map.items():
@@ -258,7 +281,6 @@ class Vision:
                                     heapq.heappush(self.high_priority_heap, (priority, object_id, detection))
                                 else:
                                     heapq.heappush(self.low_priority_heap, (1, object_id, detection))
-                            
                             self.added_to_heap.add(object_id)
 
                 for gone_id in self.tracker.gone_ids:
@@ -269,11 +291,11 @@ class Vision:
                         self.engine.runAndWait()
                         self.store_announcement(message)
                         self.announced_ids.remove(gone_id)
-                        
+
                 self.tracker.gone_ids.clear()
 
                 # self.check_interrupt_file()  # Check for button presses
-
+                self.read_arduino()
 
                 fps = int(1 / (time.time() - start_time))
                 cv2.putText(frame, f"FPS: {fps}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
