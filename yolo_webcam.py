@@ -145,15 +145,13 @@ class Vision:
             if data == "LOW_PRIORITY":
                 # Do something in response to low priority warning
                 print("Low priority warning received.")
-                self.display_low_priority_announcements()
-
                 self.write_warning()
+                self.display_low_priority_announcements()
             elif data == "LAST_MESSAGE":
+                self.write_warning()
                 self.display_last_message()
                 # Do something in response to last message
                 print("Last message warning received.")
-
-                self.write_warning()
 
     # def check_interrupt_file(self):
     #     """Read the interrupt file and take action based on its content."""
@@ -176,7 +174,7 @@ class Vision:
             while self.low_priority_heap:
                 priority, object_id, detection = heapq.heappop(self.low_priority_heap)
                 label, confidence, bbox = detection
-                message = f"Low priority: {label} detected."
+                message = f"{label} detected."
                 self.engine.say(message)
                 self.engine.runAndWait()
                 self.store_announcement(message)
